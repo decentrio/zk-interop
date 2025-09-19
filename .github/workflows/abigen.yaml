@@ -1,0 +1,72 @@
+name: abigen
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'abi/**'
+      - 'packages/go-abigen/**'
+      - '**.sol'
+      - 'bun.lockb'
+  push:
+    branches:
+      - main
+    paths:
+      - 'abi/**'
+      - 'packages/go-abigen/**'
+
+jobs:
+  check:
+    runs-on: depot-ubuntu-22.04-4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up environment
+        uses: ./.github/actions/foundry-setup
+
+      - uses: actions/setup-go@v4
+        with:
+          go-version: 1.23
+
+      - uses: extractions/setup-just@v2
+
+      - name: Install abigen
+        run: go install github.com/ethereum/go-ethereum/cmd/abigen@latest
+
+      - name: Run abigen
+        run: just generate-abi
+
+      - name: Check for diffs in go-abigen
+        run: |
+          if ! git diff --quiet HEAD -- packages/go-abigen; then
+            echo "Git diff found in the selected directory. Failing the job."
+            exit 1
+          else
+            echo "No changes detected in the selected directory."
+          fi
+
+  golangci:
+    runs-on: depot-ubuntu-22.04-4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+        with:
+          go-version: 1.23
+          cache-dependency-path: packages/go-abigen/go.sum
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.1
+          working-directory: packages/go-abigen
+
+  test:
+    runs-on: depot-ubuntu-22.04-4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+        with:
+          go-version: 1.23
+          cache-dependency-path: packages/go-abigen/go.sum
+
+      - name: Unit test abigen
+        run: cd packages/go-abigen && go test -v ./...

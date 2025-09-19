@@ -1,0 +1,23 @@
+[package]
+name        = "sp1-ics07-tendermint-uc-and-membership"
+description = "Update client and verify (non)membership program for sp1-ics07-tendermint"
+version     = { workspace = true }
+edition     = { workspace = true }
+repository  = { workspace = true }
+license     = { workspace = true }
+
+[[bin]]
+name = "sp1-ics07-tendermint-uc-and-membership"
+test = false
+
+[dependencies]
+tendermint-light-client-uc-and-membership = { workspace = true }
+
+sp1-zkvm                           = { workspace = true, default-features = true }
+sp1-ics07-utils                    = { workspace = true }
+ibc-core-commitment-types          = { workspace = true }
+ibc-client-tendermint              = { workspace = true }
+tendermint-light-client-membership = { workspace = true }
+alloy-sol-types                    = { workspace = true }
+ibc-eureka-solidity-types          = { workspace = true }
+ibc-proto                          = { workspace = true }
