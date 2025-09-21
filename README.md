@@ -37,9 +37,11 @@ The repository is organized as follows:
 ### Architecture
 ZK Bridge consists of:
 - **Light Clients**: Verifies state transitions on both Cosmos and EVM chains.
-- **IBC Modules**: Implements IBC messaging and packet handling for cross-chain communication.
+- **Bridge Router**: Implements IBC messaging and packet handling for cross-chain communication. IBC modules for Cosmos and Solidity contracts for EVM.
 - **Relayer**: Facilitates message passing and proof submission between chains.
-- **ZKP Circuits**: Generates and verifies zero-knowledge proofs for trust-minimized validation.
+- **ZKP Prover**: Generates and verifies zero-knowledge proofs for trust-minimized validation.
+
+![Zk Bridge Architecture](docs/assets/architecture.png)
 
 ## Build
 
